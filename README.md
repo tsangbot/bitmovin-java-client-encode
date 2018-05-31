@@ -22,13 +22,13 @@ Encode example with Java Client
 Here is a starting guide based on a full example (Non-DRM), which is using the Bitmovin JAVA API client and is available in Bitmovin Github repository. A DRM example with CENC (PlayReady/Widevine) and FairPlay can be found here.
 
 These are the common steps required 
--Define an Input
--Define an Output
--Define a Codec Configuration
--Create an Encoding - (Optional DRM Step)
--Initiate an Encoding
--Create a Manifest (MPD/HLS) - (Optional DRM Step)
--Create an Encoding with Java Client Example
+* Define an Input
+* Define an Output
+* Define a Codec Configuration
+* Create an Encoding - (Optional DRM Step)
+* Initiate an Encoding
+* Create a Manifest (MPD/HLS) - (Optional DRM Step)
+* Create an Encoding with Java Client Example
 
 Pre-requisites: Please ensure you have read README.md from https://github.com/bitmovin/bitmovin-java and retrieve your encoding API key
 private static String ApiKey = "<INSERT_YOUR_APIKEY>";
@@ -56,7 +56,7 @@ private static String S3_INPUT_PATH = "/INSERT_YOUR_PATH_TO_INPUT_FILE/SampleVid
 ```
 
  
-#####Define an Output
+#### Define an Output
 Similar to input, we must declare an output storage location needed to access a specific type of storage in order to make the encoded content accessible for playback. For this example we will create an “S3 Output”, with the following code:
 ```java
 private static String S3_OUTPUT_ACCESSKEY = "<INSERT_YOUR_ACCESSKEY>";
@@ -78,7 +78,7 @@ private static String OUTPUT_BASE_PATH =  "outputs/" + ENCODING_JOB_NAME + "/";
 ```
 
  
-#####Create Codec Configurations
+#### Create Codec Configurations
 A Codec Configuration defines, which codec and encoding configuration shall be used, to create one audio or video rendition out of a audio or video stream of the given input file.
 H264 Video Codec Configuration Example 1080p
 ```java
@@ -101,7 +101,7 @@ H264VideoConfiguration videoConfiguration1080p = bitmovinApi.configuration.video
 
 
  
-#####Create an Encoding
+#### Create an Encoding
 ```java
 Encoding encoding = new Encoding();
 encoding.setName("Encoding JAVA");
@@ -149,7 +149,7 @@ TSMuxing tsAudio = this.createTSMuxing(encoding, audioStream, output, OUTPUT_BAS
 ```
 
  
-#####Create an Encoding with DRM
+#### Create an Encoding with DRM
 In order to protect Premium content whilst ensuring the maximum devices coverage, we recommend the use of Multi-DRM solution. In this example we will demonstrate the use of CENC (PlayReady + widevine) and FairPlay.
 We will begin by specifying DRM parameters. These values will be provided by your multi-DRM licensing server provider such as Irdeto, EZDRM, ExpressPlay, Axinom, etc. 
 ```java
@@ -163,13 +163,13 @@ private static String FairPlay_IV = "<INSERT_YOUR_FairPlay_IV>";
 private static String FairPlay_URI = "skd://userspecifc?custom=information";
 ```
 
-key: This is the common content encryption key
-kid: This is the common unique identifier for your content key in hex format
-widevinePssh: This is the value for the Widevine pssh box
-playreadyLaUrl: This is the URL to the PlayReady license server
-FairPlayKey: A key that will be used to encrypt the content (16 byte; 32 hexadecimal characters)
-FairPlayIV: The initialization vector is optional. If it is not provided we will generate one for you. (16 byte; 32 hexadecimal characters)
-FairPlayUri: If provided, this URI will be used for license acquisition
+* key: This is the common content encryption key
+* kid: This is the common unique identifier for your content key in hex format
+* widevinePssh: This is the value for the Widevine pssh box
+* playreadyLaUrl: This is the URL to the PlayReady license server
+* FairPlayKey: A key that will be used to encrypt the content (16 byte; 32 hexadecimal characters)
+* FairPlayIV: The initialization vector is optional. If it is not provided we will generate one for you. (16 byte; 32 hexadecimal characters)
+* FairPlayUri: If provided, this URI will be used for license acquisition
 
 
 We will use these values to create a CENC DRM and FairPlay DRM resources, will be created for each fMP4 and TS Muxing you want to be encrypted and protected with Widevine and PlayReady DRM as well as FairPlay respectively, together with a output location, where those encrypted segments should be stored at. Hence we don't provide the output location with the fMP4 or TS Muxing, but with the CENC and FairPlay DRM resource instead.
@@ -200,11 +200,11 @@ this.addOutputToDRM(audioFairPlayDRM, output, OUTPUT_BASE_PATH + "/audio/128kbps
 videoFairPlayDRM1080p = this.addFairPlayDrmToTssMuxing(encoding, tsMuxing1080, videoFairPlayDRM1080p);
 audioFairPlayDRM = this.addFairPlayDrmToTssMuxing(encoding, tsAudio, audioFairPlayDRM);
 ```
-*Additional steps are required in manifest creation to support DRM, see later section.
+* Additional steps are required in manifest creation to support DRM, see later section.
 Note: If a output location for the muxing as well, our API would store unencrypted segments to the given output location as well.
 
 
-#####Initiate an Encoding
+#### Initiate an Encoding
 The configuration of the encoding by now, we will initiate the encoding task.
 bitmovinApi.encoding.start(encoding);
 ```java
@@ -227,7 +227,7 @@ if (status.getStatus() != Status.FINISHED) {
 Encoding tasks are orchestrated and monitored by Bitmovin encoding service, task can be managed and monitored using Bitmovin REST API (bitmovingApi.encoding.getStatus) or via the Bitmovin user console. 
 In order to play segmented content, a manifest is required, which contains all the information where and how the player can the content for playback.
  
-#####Create a Manifest (MPD/HLS)
+#### Create a Manifest (MPD/HLS)
 An MPD Manifest will need an output configuration (Output + output path information), a manifest name, and a manifest type:
 ```java
 // MANIFEST OUTPUT DESTINATION
@@ -263,7 +263,7 @@ this.addContentProtectionToDRMfMP4Representation(manifest, period, audioAdaptati
 ```
 
  
-#####Start MPD Manifest Creation
+#### Start MPD Manifest Creation
 ```java
 bitmovinApi.manifest.dash.startGeneration(manifest);
 Status dashStatus = bitmovinApi.manifest.dash.getGenerationStatus(manifest);
@@ -301,7 +301,7 @@ bitmovinApi.manifest.hls.createMediaInfo(manifestHls, audioMediaInfo);
 this.addStreamInfoToHlsManifest("video_1080p.m3u8", encoding.getId(), videoStream1080p.getId(), tsMuxing1080.getId(), "audio", "video/1080p_hls", manifestHls);
 ```
  
-######Optional DRM steps (FairPlay example)
+#### Optional DRM steps (FairPlay example)
 
 DRM info must be specified in Stream Info.
 ```java
@@ -346,7 +346,7 @@ private StreamInfo addStreamInfoToHlsManifest(String uri, String encodingId, Str
 ```
 
  
-#####Start HLS Manifest Creation
+#### Start HLS Manifest Creation
 ```java
 bitmovinApi.manifest.hls.startGeneration(manifestHls);
 Status hlsStatus = bitmovinApi.manifest.hls.getGenerationStatus(manifestHls);
