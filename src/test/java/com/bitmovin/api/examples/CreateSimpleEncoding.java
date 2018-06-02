@@ -45,7 +45,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by Roland Kersche on 01.06.17.
+ * Created by Brian Tsang on 31.05.18.
  */
 public class CreateSimpleEncoding {
     private static String ApiKey = "d8e098d1-85e3-4b49-aa13-f8ac8acb443c";

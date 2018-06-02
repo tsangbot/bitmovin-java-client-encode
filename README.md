@@ -28,7 +28,9 @@ These are the common steps required
 * Create an Encoding - (Optional DRM Step)
 * Initiate an Encoding
 * Create a Manifest (MPD/HLS) - (Optional DRM Step)
-* Create an Encoding with Java Client Example
+* Webhook
+
+Create an Encoding with Java Client Example
 
 Pre-requisites: Please ensure you have read README.md from https://github.com/bitmovin/bitmovin-java and retrieve your encoding API key
 private static String ApiKey = "<INSERT_YOUR_APIKEY>";
@@ -362,6 +364,21 @@ System.out.println("Encoding completed successfully");
 
 Once configuration has been defined, the HLS manifest creation can start. Once this is completed the manifest will be stored in the output location specified. The content is ready for playback from the output destination as specified. 
 ```
+
+#### Webhook
+The use of webhook allows you to push notification of the encoding job rather than pulling status via Bitmovin API.
+
+Set up is very simple, specify the URL you wish notifications get push to and initiate before the encoding job stats.
+
+```java
+private static String NOTIFICATION_URL = "<INSERT_YOUR_NOTIFICATION_URL>";
+
+// Create webhook for push notification
+      this.createWebHook(encoding)
+  // Starts encoding job
+       bitmovinApi.encoding.start(encoding);
+
+``` 
 
 
 
