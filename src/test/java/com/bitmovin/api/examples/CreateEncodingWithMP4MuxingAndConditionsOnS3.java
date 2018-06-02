@@ -51,7 +51,7 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
     // private static String HTTPS_INPUT_HOST = "<INSERT_YOUR_HTTP_HOST>"; // ex.: storage.googleapis.com/
     // private static String HTTPS_INPUT_PATH = "<INSERT_YOUR_PATH_TO_INPUT_FILE>";
     private static String S3_INPUT_ID = "d9de38f7-47ac-4097-a640-1f355f619be7"; // Reuse Input set in bitmovin
-    private static String S3_INPUT_PATH = "/inputs/SampleVideo_1280x720_5mb.mp4";
+    private static String S3_INPUT_PATH = "/inputs/i_am_legend.mp4";
 
     private static String ENCODING_JOB_NAME = "Java MPX muxing Condition S3 example " + new Date().getTime();
     // private static String S3_OUTPUT_ACCESSKEY = "<INSERT_YOUR_ACCESSKEY>";
@@ -66,6 +66,14 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
     private static double INPUT_FPS = 23.98;
     private static double KEYFRAME_INTERVAL = 0.5;
 
+    // Reusable Codec configuration
+    private static String AAC_CONFIGURATION_ID = "c16acdb0-35e8-4754-b731-fcd5b1eb1ca3";
+    private static String VIDEO_CONFIGURATION_240P = "70d7e030-add3-4196-9c68-b9731d93533a";
+    private static String VIDEO_CONFIGURATION_360P = "2b61653c-8f03-466f-84ae-ae73f5a0d572";
+    private static String VIDEO_CONFIGURATION_480P = "8aaf58c1-c738-41de-9e3c-821c47e12b32";
+    private static String VIDEO_CONFIGURATION_720P = "55faf897-6325-419a-8b4c-b86dbcc3c104";
+    private static String VIDEO_CONFIGURATION_1080P = "5df433a1-0edd-4311-893d-177149775c36";
+
 
     private static BitmovinApi bitmovinApi;
 
@@ -76,7 +84,7 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
 
         bitmovinApi = new BitmovinApi(API_KEY);
         Encoding encoding = new Encoding();
-        encoding.setName("Encoding JAVA");
+        encoding.setName(ENCODING_JOB_NAME);
         encoding.setCloudRegion(CLOUD_REGION);
         encoding = bitmovinApi.encoding.create(encoding);
         
@@ -92,50 +100,58 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
         // output.setBucketName(S3_OUTPUT_BUCKET_NAME);
         // output = bitmovinApi.output.s3.create(output);
 
-        AACAudioConfig aacConfiguration = new AACAudioConfig();
-        aacConfiguration.setBitrate(96000L);
-        aacConfiguration.setRate(48000f);
-        aacConfiguration = bitmovinApi.configuration.audioAAC.create(aacConfiguration);
+        
+        // AACAudioConfig aacConfiguration = new AACAudioConfig();
+        // aacConfiguration.setBitrate(96000L);
+        // aacConfiguration.setRate(48000f);
+        // aacConfiguration = bitmovinApi.configuration.audioAAC.create(aacConfiguration);
 
-        H264VideoConfiguration videoConfiguration240p = new H264VideoConfiguration();
-        videoConfiguration240p.setHeight(240);
-        videoConfiguration240p.setBitrate(195000L);
-        videoConfiguration240p.setProfile(ProfileH264.BASELINE);
-        videoConfiguration240p.setMinGop(gop);
-        videoConfiguration240p.setMaxGop(gop);
-        videoConfiguration240p = bitmovinApi.configuration.videoH264.create(videoConfiguration240p);
+        // H264VideoConfiguration videoConfiguration240p = new H264VideoConfiguration();
+        // videoConfiguration240p.setHeight(240);
+        // videoConfiguration240p.setBitrate(195000L);
+        // videoConfiguration240p.setProfile(ProfileH264.BASELINE);
+        // videoConfiguration240p.setMinGop(gop);
+        // videoConfiguration240p.setMaxGop(gop);
+        // videoConfiguration240p = bitmovinApi.configuration.videoH264.create(videoConfiguration240p);
 
-        H264VideoConfiguration videoConfiguration360p = new H264VideoConfiguration();
-        videoConfiguration360p.setHeight(360);
-        videoConfiguration360p.setBitrate(750000L);
-        videoConfiguration360p.setProfile(ProfileH264.MAIN);
-        videoConfiguration360p.setMinGop(gop);
-        videoConfiguration360p.setMaxGop(gop);
-        videoConfiguration360p = bitmovinApi.configuration.videoH264.create(videoConfiguration360p);
+        // H264VideoConfiguration videoConfiguration360p = new H264VideoConfiguration();
+        // videoConfiguration360p.setHeight(360);
+        // videoConfiguration360p.setBitrate(750000L);
+        // videoConfiguration360p.setProfile(ProfileH264.MAIN);
+        // videoConfiguration360p.setMinGop(gop);
+        // videoConfiguration360p.setMaxGop(gop);
+        // videoConfiguration360p = bitmovinApi.configuration.videoH264.create(videoConfiguration360p);
 
-        H264VideoConfiguration videoConfiguration480p = new H264VideoConfiguration();
-        videoConfiguration480p.setHeight(480);
-        videoConfiguration480p.setBitrate(1750000L);
-        videoConfiguration480p.setProfile(ProfileH264.MAIN);
-        videoConfiguration480p.setMinGop(gop);
-        videoConfiguration480p.setMaxGop(gop);
-        videoConfiguration480p = bitmovinApi.configuration.videoH264.create(videoConfiguration480p);
+        // H264VideoConfiguration videoConfiguration480p = new H264VideoConfiguration();
+        // videoConfiguration480p.setHeight(480);
+        // videoConfiguration480p.setBitrate(1750000L);
+        // videoConfiguration480p.setProfile(ProfileH264.MAIN);
+        // videoConfiguration480p.setMinGop(gop);
+        // videoConfiguration480p.setMaxGop(gop);
+        // videoConfiguration480p = bitmovinApi.configuration.videoH264.create(videoConfiguration480p);
 
-        H264VideoConfiguration videoConfiguration720p = new H264VideoConfiguration();
-        videoConfiguration720p.setHeight(720);
-        videoConfiguration720p.setBitrate(3000000L);
-        videoConfiguration720p.setProfile(ProfileH264.HIGH);
-        videoConfiguration720p.setMinGop(gop);
-        videoConfiguration720p.setMaxGop(gop);
-        videoConfiguration720p = bitmovinApi.configuration.videoH264.create(videoConfiguration720p);
+        // H264VideoConfiguration videoConfiguration720p = new H264VideoConfiguration();
+        // videoConfiguration720p.setHeight(720);
+        // videoConfiguration720p.setBitrate(3000000L);
+        // videoConfiguration720p.setProfile(ProfileH264.HIGH);
+        // videoConfiguration720p.setMinGop(gop);
+        // videoConfiguration720p.setMaxGop(gop);
+        // videoConfiguration720p = bitmovinApi.configuration.videoH264.create(videoConfiguration720p);
 
-        H264VideoConfiguration videoConfiguration1080p = new H264VideoConfiguration();
-        videoConfiguration1080p.setHeight(1080);
-        videoConfiguration1080p.setBitrate(4500000L);
-        videoConfiguration1080p.setProfile(ProfileH264.HIGH);
-        videoConfiguration1080p.setMinGop(gop);
-        videoConfiguration1080p.setMaxGop(gop);
-        videoConfiguration1080p = bitmovinApi.configuration.videoH264.create(videoConfiguration1080p);
+        // H264VideoConfiguration videoConfiguration1080p = new H264VideoConfiguration();
+        // videoConfiguration1080p.setHeight(1080);
+        // videoConfiguration1080p.setBitrate(4500000L);
+        // videoConfiguration1080p.setProfile(ProfileH264.HIGH);
+        // videoConfiguration1080p.setMinGop(gop);
+        // videoConfiguration1080p.setMaxGop(gop);
+        // videoConfiguration1080p = bitmovinApi.configuration.videoH264.create(videoConfiguration1080p);
+
+        AACAudioConfig aacConfiguration = bitmovinApi.configuration.audioAAC.get(AAC_CONFIGURATION_ID);
+        H264VideoConfiguration videoConfiguration240p = bitmovinApi.configuration.videoH264.get(VIDEO_CONFIGURATION_240P);
+        H264VideoConfiguration videoConfiguration360p = bitmovinApi.configuration.videoH264.get(VIDEO_CONFIGURATION_360P);
+        H264VideoConfiguration videoConfiguration480p = bitmovinApi.configuration.videoH264.get(VIDEO_CONFIGURATION_480P);
+        H264VideoConfiguration videoConfiguration720p = bitmovinApi.configuration.videoH264.get(VIDEO_CONFIGURATION_720P);
+        H264VideoConfiguration videoConfiguration1080p = bitmovinApi.configuration.videoH264.get(VIDEO_CONFIGURATION_1080P);
 
         InputStream inputStreamVideo = new InputStream();
         inputStreamVideo.setInputPath(S3_INPUT_PATH);

@@ -78,7 +78,7 @@ public class CreateEncodingWithCencDRM {
      * private static String S3_INPUT_PATH = "<INSERT_YOUR_PATH_TO_INPUT_FILE>";
      **/
     private static String S3_INPUT_ID = "d9de38f7-47ac-4097-a640-1f355f619be7"; // Reuse Input set in bitmovin
-    private static String S3_INPUT_PATH = "/inputs/SampleVideo_1280x720_5mb.mp4";
+    private static String S3_INPUT_PATH = "/inputs/bourne_ultimatum.mp4";
 
     // Outputs
 
