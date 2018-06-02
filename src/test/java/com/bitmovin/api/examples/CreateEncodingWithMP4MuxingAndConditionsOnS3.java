@@ -19,6 +19,7 @@ import com.bitmovin.api.encoding.encodings.streams.Stream;
 import com.bitmovin.api.encoding.enums.CloudRegion;
 import com.bitmovin.api.encoding.enums.StreamSelectionMode;
 import com.bitmovin.api.encoding.inputs.HttpsInput;
+import com.bitmovin.api.encoding.inputs.S3Input;
 import com.bitmovin.api.encoding.outputs.Output;
 import com.bitmovin.api.encoding.outputs.S3Output;
 import com.bitmovin.api.encoding.status.Task;
@@ -44,15 +45,23 @@ import java.util.List;
 public class CreateEncodingWithMP4MuxingAndConditionsOnS3
 {
 
-    private static String API_KEY = "<INSERT_YOUR_APIKEY>";
+    private static String API_KEY = "d8e098d1-85e3-4b49-aa13-f8ac8acb443c";
 
     private static CloudRegion CLOUD_REGION = CloudRegion.AWS_EU_WEST_1;
-    private static String HTTPS_INPUT_HOST = "<INSERT_YOUR_HTTP_HOST>"; // ex.: storage.googleapis.com/
-    private static String HTTPS_INPUT_PATH = "<INSERT_YOUR_PATH_TO_INPUT_FILE>";
-    private static String S3_OUTPUT_ACCESSKEY = "<INSERT_YOUR_ACCESSKEY>";
-    private static String S3_OUTPUT_SECRET_KEY = "<INSERT_YOUR_SECRETKEY>";
-    private static String S3_OUTPUT_BUCKET_NAME = "BUCKET_NAME";
-    private static String OUTPUT_BASE_PATH = "path/to/your/outputs/" + new Date().getTime();
+    // private static String HTTPS_INPUT_HOST = "<INSERT_YOUR_HTTP_HOST>"; // ex.: storage.googleapis.com/
+    // private static String HTTPS_INPUT_PATH = "<INSERT_YOUR_PATH_TO_INPUT_FILE>";
+    private static String S3_INPUT_ID = "d9de38f7-47ac-4097-a640-1f355f619be7"; // Reuse Input set in bitmovin
+    private static String S3_INPUT_PATH = "/inputs/SampleVideo_1280x720_5mb.mp4";
+
+    private static String ENCODING_JOB_NAME = "Java MPX muxing Condition S3 example " + new Date().getTime();
+    // private static String S3_OUTPUT_ACCESSKEY = "<INSERT_YOUR_ACCESSKEY>";
+    // private static String S3_OUTPUT_SECRET_KEY = "<INSERT_YOUR_SECRETKEY>";
+    // private static String S3_OUTPUT_BUCKET_NAME = "BUCKET_NAME";
+    // private static String OUTPUT_BASE_PATH = "path/to/your/outputs/" + new Date().getTime();
+
+    private static String S3_OUTPUT_ID ="a3881e62-03f5-482b-8f8a-6ac8603f0c83";
+    private static String S3_OUTPUT_BASE_PATH =  "outputs/" + ENCODING_JOB_NAME + "/";
+    
     private static String NOTIFICATION_URL = "<INSERT_YOUR_NOTIFICATION_URL>";
     private static double INPUT_FPS = 23.98;
     private static double KEYFRAME_INTERVAL = 0.5;
@@ -70,16 +79,18 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
         encoding.setName("Encoding JAVA");
         encoding.setCloudRegion(CLOUD_REGION);
         encoding = bitmovinApi.encoding.create(encoding);
+        
+        S3Input input = bitmovinApi.input.s3.get(S3_INPUT_ID); // input id
+        S3Output output = bitmovinApi.output.s3.get(S3_OUTPUT_ID);
+        // HttpsInput input = new HttpsInput();
+        // input.setHost(HTTPS_INPUT_HOST);
+        // input = bitmovinApi.input.https.create(input);
 
-        HttpsInput input = new HttpsInput();
-        input.setHost(HTTPS_INPUT_HOST);
-        input = bitmovinApi.input.https.create(input);
-
-        S3Output output = new S3Output();
-        output.setAccessKey(S3_OUTPUT_ACCESSKEY);
-        output.setSecretKey(S3_OUTPUT_SECRET_KEY);
-        output.setBucketName(S3_OUTPUT_BUCKET_NAME);
-        output = bitmovinApi.output.s3.create(output);
+        // S3Output output = new S3Output();
+        // output.setAccessKey(S3_OUTPUT_ACCESSKEY);
+        // output.setSecretKey(S3_OUTPUT_SECRET_KEY);
+        // output.setBucketName(S3_OUTPUT_BUCKET_NAME);
+        // output = bitmovinApi.output.s3.create(output);
 
         AACAudioConfig aacConfiguration = new AACAudioConfig();
         aacConfiguration.setBitrate(96000L);
@@ -127,13 +138,13 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
         videoConfiguration1080p = bitmovinApi.configuration.videoH264.create(videoConfiguration1080p);
 
         InputStream inputStreamVideo = new InputStream();
-        inputStreamVideo.setInputPath(HTTPS_INPUT_PATH);
+        inputStreamVideo.setInputPath(S3_INPUT_PATH);
         inputStreamVideo.setInputId(input.getId());
         inputStreamVideo.setSelectionMode(StreamSelectionMode.VIDEO_RELATIVE);
         inputStreamVideo.setPosition(0);
 
         InputStream inputStreamAudio = new InputStream();
-        inputStreamAudio.setInputPath(HTTPS_INPUT_PATH);
+        inputStreamAudio.setInputPath(S3_INPUT_PATH);
         inputStreamAudio.setInputId(input.getId());
         inputStreamAudio.setSelectionMode(StreamSelectionMode.AUDIO_RELATIVE);
         inputStreamAudio.setPosition(0);
@@ -189,7 +200,7 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
         this.createMP4Muxing(encoding, output, videoStream720p, audioStream, "video_audio_720p.mp4");
         this.createMP4Muxing(encoding, output, videoStream1080p, audioStream, "video_audio_1080p.mp4");
 
-        this.createWebHook(encoding);
+        // this.createWebHook(encoding);
 
         bitmovinApi.encoding.start(encoding);
 
@@ -218,7 +229,7 @@ public class CreateEncodingWithMP4MuxingAndConditionsOnS3
     {
         EncodingOutput encodingOutput = new EncodingOutput();
         encodingOutput.setOutputId(output.getId());
-        encodingOutput.setOutputPath(OUTPUT_BASE_PATH);
+        encodingOutput.setOutputPath(S3_OUTPUT_BASE_PATH);
         encodingOutput.setAcl(new ArrayList<AclEntry>()
         {{
             this.add(new AclEntry(AclPermission.PUBLIC_READ));

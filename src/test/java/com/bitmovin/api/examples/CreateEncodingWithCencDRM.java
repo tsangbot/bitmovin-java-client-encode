@@ -40,6 +40,9 @@ import com.bitmovin.api.encoding.status.Task;
 import com.bitmovin.api.enums.Status;
 import com.bitmovin.api.exceptions.BitmovinApiException;
 import com.bitmovin.api.http.RestException;
+import com.bitmovin.api.webhooks.Webhook;
+import com.bitmovin.api.webhooks.enums.WebhookHttpMethod;
+import com.bitmovin.api.webhooks.enums.WebhookType;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,6 +67,7 @@ public class CreateEncodingWithCencDRM
     private static Boolean ENCRYPTION_FLAG = false; // set to true if you need to encrypt the content
     private static String ENCRYTION_IN_TITLE = (ENCRYPTION_FLAG) ? "with Encryption" : "";
     private static String ENCODING_JOB_NAME = "Java encoding example " + ENCRYTION_IN_TITLE + " " + new Date().getTime();
+    private static String NOTIFICATION_URL = "<INSERT_YOUR_NOTIFICATION_URL>";
     
     // Inputs
     
@@ -324,7 +328,7 @@ public class CreateEncodingWithCencDRM
             tsAudio = this.createTSMuxing(encoding, audioStream, output, S3_OUTPUT_BASE_PATH + "/audio/128kbps_hls", AclPermission.PUBLIC_READ);
         }
      
-
+        // this.createWebHook(encoding);
         bitmovinApi.encoding.start(encoding);
 
         Task status = bitmovinApi.encoding.getStatus(encoding);
@@ -724,5 +728,14 @@ r.setMuxingId(muxingId);
 r.setSegmentPath(segmentPath);
 bitmovinApi.manifest.dash.addRepresentationToAdaptationSet(manifest, period, adaptationSet, r);
 }
+private void createWebHook(Encoding encoding) throws URISyntaxException, BitmovinApiException, RestException, UnirestException, IOException
+    {
+        Webhook webhook = new Webhook();
+        webhook.setUrl(NOTIFICATION_URL);
+        webhook.setMethod(WebhookHttpMethod.POST);
+        bitmovinApi.notifications.webhooks.create(webhook, WebhookType.ENCODING_FINISHED, encoding.getId());
+        bitmovinApi.notifications.webhooks.create(webhook, WebhookType.ENCODING_ERROR, encoding.getId());
+    }
+
 }
 
