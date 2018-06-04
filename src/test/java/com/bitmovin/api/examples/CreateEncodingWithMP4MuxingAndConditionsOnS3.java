@@ -41,6 +41,7 @@ import java.util.List;
 
 /**
  * Created by Roland Kersche on 30.05.17.
+ * Modified by Brian Tsang on 31.05.17.
  */
 public class CreateEncodingWithMP4MuxingAndConditionsOnS3
 {
